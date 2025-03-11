@@ -31,7 +31,7 @@ const getImage = async () => {
 
         // المحاولة الثانية باستخدام Pexels إذا فشل DeepAI
         try {
-            const pexelsResponse = await fetch(`https://api.pexels.com/v1/search?query=${inp.value}&per_page=3`, {
+            const pexelsResponse = await fetch(`https://api.pexels.com/v1/search?query=${inp.value}&per_page=6`, {
                 headers: {
                     "Authorization": pexelsApiKey
                 }
@@ -51,6 +51,32 @@ const getImage = async () => {
         }
     }
 };
+let imageCount = 6; 
+
+const loadMoreImages = async () => {
+    imageCount += 6; // زيادة عدد الصور في كل مرة
+
+    try {
+        const pexelsResponse = await fetch(`https://api.pexels.com/v1/search?query=${inp.value}&per_page=${imageCount}`, {
+            headers: {
+                "Authorization": pexelsApiKey
+            }
+        });
+
+        const pexelsData = await pexelsResponse.json();
+
+        if (pexelsData.photos.length > 0) {
+            const imageUrls = pexelsData.photos.map(photo => photo.src.medium);
+            displayImages(imageUrls);
+        } else {
+            document.getElementById("showMore").style.display = "none"; // إخفاء الزر إذا لم توجد صور جديدة
+        }
+    } catch (error) {
+        console.error("Error fetching more images:", error);
+        document.getElementById("showMore").style.display = "none"; // إخفاء الزر عند حدوث خطأ
+    }
+};
+
 
 const displayImages = (imageUrls) => {
     images.innerHTML = "";
@@ -58,7 +84,16 @@ const displayImages = (imageUrls) => {
         const img = document.createElement("img");
         img.src = url;
         img.style.width = "200px";
+        img.style.height = "200px";
         img.style.margin = "10px";
         images.appendChild(img);
     });
+
+    // زر "Show More" لن يظهر إلا بعد عرض 6 صور على الأقل
+    const showMoreBtn = document.getElementById("showMore");
+    if (imageUrls.length >= 6) {
+        showMoreBtn.style.display = "inline"; // إظهار الزر
+    } else {
+        showMoreBtn.style.display = "none"; // إخفاؤه
+    }
 };

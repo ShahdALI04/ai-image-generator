@@ -6,17 +6,14 @@
     <title>AI Image Generator</title>
 </head>
 <body>
-    <!-- title of the project -->
-     <h2>AI Image Generator</h2>
-    <!-- results or images -->
-    <div class="images">
-        
-    </div>
-    <!-- input or prompt -->
-     <div class="prompt">
+    <h2>AI Image Generator</h2>
+    <div class="images"></div>
+    <a id="showMore" onclick="loadMoreImages()">Show More</a>
+
+    <div class="prompt">
         <input id="inp" type="text">
         <button onclick="getImage()">Generate</button>
-     </div>
+    </div>
     <script src="main.js"></script>
 </body>
 </html>
